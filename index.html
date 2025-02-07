@@ -455,9 +455,12 @@
             sortDirection: 'asc',
             filterText: ''
         };
-
         function getServerUrl() {
-            // You can change this to your computer's IP address
+            // For development
+            if (window.location.hostname === 'localhost') {
+                return 'http://localhost:3001';
+            }
+            // For production with ngrok
             return 'https://a2af-115-243-103-7.ngrok-free.app';
         }
 
@@ -727,14 +730,16 @@
                 socket.disconnect();
             }
 
-            socket = io('http://localhost:3001', {
-                auth: { token },
+            socket = io(getServerUrl(), {
                 transports: ['websocket'],
                 reconnection: true,
                 reconnectionAttempts: 5,
-                reconnectionDelay: 1000
+                reconnectionDelay: 1000,
+                cors: {
+                    origin: "*",
+                    methods: ["GET", "POST"]
+                }
             });
-
             socket.on('connect_error', (error) => {
                 console.log('Socket connection error:', error);
                 log('Connection error: Retrying...', 'error');
@@ -799,7 +804,7 @@
                     }
 
                     // Update displays
-                 updateAllDisplays();
+                    updateAllDisplays();
                 }
 
                 log(`Sale completed: ₹${(data.purchasePrice / 10000000).toFixed(2)} Cr`, 'success');
@@ -832,7 +837,7 @@
             updateCurrentItem();
             updateHousesList();
             updateCatalogue();
-           
+
         }
 
 
