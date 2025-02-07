@@ -456,6 +456,11 @@
             filterText: ''
         };
 
+        function getServerUrl() {
+            // You can change this to your computer's IP address
+            return 'https://a2af-115-243-103-7.ngrok-free.app';
+        }
+
         function setNewBid() {
             const newBidInput = document.getElementById('newBid');
             const newBid = parseFloat(newBidInput.value);
@@ -535,7 +540,7 @@
             const assignButton = document.querySelector(`button[onclick="assignCrewToHouse(${houseId})"]`);
             if (assignButton) assignButton.disabled = true;
 
-            fetch('http://localhost:3001/api/sell', {
+            fetch(`${getServerUrl()}/api/sell`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -688,8 +693,8 @@
 
         function loadInitialData() {
             return Promise.all([
-                fetchWithAuth('http://localhost:3001/api/crew').then(r => r && r.json()),
-                fetchWithAuth('http://localhost:3001/api/leaderboard').then(r => r && r.json())
+                fetchWithAuth(`${getServerUrl()}/api/crew`).then(r => r && r.json()),
+                fetchWithAuth(`${getServerUrl()}/api/leaderboard`).then(r => r && r.json())
             ])
                 .then(([crew, leaderboard]) => {
                     if (!crew || !leaderboard) return;
@@ -1098,7 +1103,7 @@
                 loginButton.textContent = 'Authenticating...';
                 loginButton.disabled = true;
 
-                fetch('http://localhost:3001/api/admin/auth', {
+                fetch(`${getServerUrl()}/api/admin/auth`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ accessCode: code })
@@ -1129,7 +1134,7 @@
                 // First, let's add a debug log to see what token we're working with
                 console.log('Attempting to verify token:', token);
 
-                fetch('http://localhost:3001/api/admin/verify', {
+                fetch(`${getServerUrl()}/api/admin/verify`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,  // Make sure to use 'Bearer ' prefix
