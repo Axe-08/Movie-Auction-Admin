@@ -6,8 +6,8 @@ class SocketManager {
         if (this.socket) {
             this.socket.disconnect();
         }
-
-        this.socket = io(config.API_URL, {
+        const WS_URL = config.API_URL.replace(/^https/, "wss");
+        this.socket = io(WS_URL, {
             ...config.SOCKET_OPTIONS,
             auth: { token }
         });
