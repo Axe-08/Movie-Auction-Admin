@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Auction Admin Dashboard</title>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <!-- Admin Login -->
+    <div id="adminLogin" class="admin-login">
+        <div class="login-box">
+            <h2 class="mb-20">Admin Authentication</h2>
+            <div class="mb-20">
+                <input type="password" id="adminCode" placeholder="Enter Admin Access Code" />
+            </div>
+            <button id="loginButton" style="width: 100%;">Login</button>
+            <p id="loginError" class="log-entry error hidden mt-10"></p>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="adminDashboard" class="hidden">
+        <div class="header">
+            <h1>Movie Auction Admin Dashboard</h1>
+            <div class="flex">
+                <span id="connectionStatus" class="status">Connecting...</span>
+                <button onclick="Auth.logout()" class="danger">Logout</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="nav-tabs">
+                <button class="tab active" onclick="Dashboard.showTab('auction')">Live Auction</button>
+                <button class="tab" onclick="Dashboard.showTab('catalogue')">Catalogue</button>
+                <button class="tab" onclick="Dashboard.showTab('leaderboard')">Leaderboard</button>
+                <button class="tab" onclick="Dashboard.showTab('logs')">Event Log</button>
+            </div>
+            <!-- Auction Tab -->
+            <div id="auctionTab" class="tab-content">
+                <div class="grid">
+                    <!-- Current Item Section -->
+                    <div class="card">
+                        <div class="flex mb-20">
+                            <h2>Current Item</h2>
+                            <div class="flex">
+                                <button onclick="Dashboard.previousItem()" id="prevBtn">←</button>
+                                <span id="itemCounter">1/10</span>
+                                <button onclick="Dashboard.nextItem()" id="nextBtn">→</button>
+                            </div>
+                        </div>
+
+                        <div id="currentItem" class="mb-20">
+                            <h3 id="itemName">Loading...</h3>
+                            <div class="flex mb-20">
+                                <div>Category: <span id="itemCategory">-</span></div>
+                                <div>Rating: <span id="itemRating">-</span></div>
+                                <div>Status: <span id="itemStatus" class="status">-</span></div>
+                            </div>
+                            <div class="mb-20">
+                                <div>Base Price: ₹<span id="basePrice">0</span> Cr</div>
+                                <div>Current Bid: ₹<span id="currentBid">0</span> Cr</div>
+                            </div>
+                            <div class="flex">
+                                <input type="number" id="newBid" placeholder="Set Price (in Cr)" step="0.25" min="0" />
+                                <button onclick="Dashboard.setNewBid()">Set Price</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Production Houses Section -->
+                    <div class="card">
+                        <h2 class="mb-20">Production Houses</h2>
+                        <div id="housesList"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Catalogue Tab -->
+            <div id="catalogueTab" class="tab-content hidden">
+                <div class="card">
+                    <div class="flex mb-20">
+                        <h2>Crew Catalogue</h2>
+                        <div class="flex">
+                            <input type="text" placeholder="Search crew members..."
+                                onkeyup="CatalogueManager.filter(this.value)" />
+                            <span id="catalogueCounter" class="counter"></span>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="catalogue-header" onclick="CatalogueManager.sort('name')">
+                                    Name <span class="sort-indicator">↕</span>
+                                </th>
+                                <th class="catalogue-header" onclick="CatalogueManager.sort('category')">
+                                    Category <span class="sort-indicator">↕</span>
+                                </th>
+                                <th class="catalogue-header" onclick="CatalogueManager.sort('rating')">
+                                    Rating <span class="sort-indicator">↕</span>
+                                </th>
+                                <th class="catalogue-header" onclick="CatalogueManager.sort('base_price')">
+                                    Base Price (Cr) <span class="sort-indicator">↕</span>
+                                </th>
+                                <th class="catalogue-header" onclick="CatalogueManager.sort('current_bid')">
+                                    Current Bid (Cr) <span class="sort-indicator">↕</span>
+                                </th>
+                                <th class="catalogue-header" onclick="CatalogueManager.sort('status')">
+                                    Status <span class="sort-indicator">↕</span>
+                                </th>
+                                <th class="catalogue-header" onclick="CatalogueManager.sort('buyer_name')">
+                                    Buyer <span class="sort-indicator">↕</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="catalogueList"></tbody>
+                    </table>
+                    <div id="cataloguePagination" class="pagination"></div>
+                </div>
+            </div>
+
+            <!-- Leaderboard Tab -->
+            <div id="leaderboardTab" class="tab-content hidden">
+                <div class="card">
+                    <h2 class="mb-20">Current Standings</h2>
+                    <div id="leaderboard"></div>
+                </div>
+            </div>
+
+            <!-- Logs Tab -->
+            <div id="logsTab" class="tab-content hidden">
+                <div class="card">
+                    <h2 class="mb-20">Event Log</h2>
+                    <div id="eventLog" class="event-log"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load JavaScript files -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/socket.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/auctionState.js"></script>
+    <script src="js/catalogue.js"></script>
+    <script src="js/leaderboard.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

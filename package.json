@@ -1,0 +1,11 @@
+{
+  "name": "auction-system-admin",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "serve src",
+    "dev": "serve src -p 8080"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}
