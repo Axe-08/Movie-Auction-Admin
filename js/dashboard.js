@@ -112,21 +112,49 @@ class Dashboard {
     static updateHousesList() {
         const container = document.getElementById('housesList');
         if (!container) return;
-
+    
         const currentCrew = AuctionState.crewMembers[AuctionState.currentCrewIndex];
-
+    
+        // First, calculate spent budget for each house
+        const houseBudgets = new Map();
+        AuctionState.crewMembers.forEach(crew => {
+            if (crew.production_house_id && crew.purchase_price) {
+                const currentSpent = houseBudgets.get(crew.production_house_id) || 0;
+                houseBudgets.set(crew.production_house_id, currentSpent + crew.purchase_price);
+            }
+        });
+    
         container.innerHTML = AuctionState.houses.map(house => {
+            // Calculate remaining budget
+            const spentBudget = houseBudgets.get(house.id) || 0;
+            const remainingBudget = house.budget - spentBudget;
+    
             const canBuy = currentCrew &&
                 currentCrew.status === 'available' &&
-                house.budget >= (currentCrew.current_bid || currentCrew.base_price);
-
+                remainingBudget >= (currentCrew.current_bid || currentCrew.base_price);
+    
+            // Get a CSS class based on budget percentage remaining
+            const getBudgetStatusClass = () => {
+                const percentage = (remainingBudget / house.budget) * 100;
+                if (percentage < 20) return 'danger';
+                if (percentage < 50) return 'warning';
+                return 'available';
+            };
+    
             return `
                 <div class="card mb-20">
                     <div class="flex mb-20">
                         <h3>${house.name}</h3>
-                        <span class="status available">₹${(house.budget / 10000000).toFixed(2)} Cr</span>
+                        <div class="budget-info">
+                            <div class="status ${getBudgetStatusClass()}">
+                                ₹${(remainingBudget / 10000000).toFixed(2)} Cr
+                            </div>
+                            <div class="total-budget">
+                                Total: ₹${(house.budget / 10000000).toFixed(2)} Cr
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex">
+                    <div class="flex justify-between">
                         <div>Crew Count: ${house.crew_count || 0}</div>
                         <div>Avg Rating: ${house.average_rating ? house.average_rating.toFixed(2) : 'N/A'}</div>
                     </div>
@@ -135,6 +163,7 @@ class Dashboard {
                             onclick="Dashboard.assignCrewToHouse(${house.id})"
                             ${!canBuy ? 'disabled' : ''}
                             class="${canBuy ? 'active' : 'disabled'}"
+                            title="${!canBuy && currentCrew ? 'Insufficient budget' : ''}"
                         >
                             Assign Crew ${!canBuy ? '(Not Available)' : ''}
                         </button>
@@ -143,7 +172,6 @@ class Dashboard {
             `;
         }).join('');
     }
-
     static async assignCrewToHouse(houseId) {
         const crew = AuctionState.crewMembers[AuctionState.currentCrewIndex];
         const token = localStorage.getItem('adminToken');

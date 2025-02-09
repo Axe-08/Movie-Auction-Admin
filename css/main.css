@@ -42,6 +42,33 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+.budget-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.total-budget {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 4px;
+}
+
+.status.danger {
+    background: #f44336;
+}
+
+.status.warning {
+    background: #ff9800;
+}
+
+.status.available {
+    background: #4caf50;
+}
+
+.flex.justify-between {
+    justify-content: space-between;
+}
 
 /* Navigation */
 .nav-tabs {
@@ -116,10 +143,6 @@ input {
     display: inline-block;
 }
 
-.status.available {
-    background: #4caf50;
-    color: white;
-}
 
 .status.sold {
     background: #f44336;
