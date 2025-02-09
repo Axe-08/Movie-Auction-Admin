@@ -1,5 +1,5 @@
 const config = {
-    API_URL: 'https://payment-spectrum-permission-follow.trycloudflare.com',
+    API_URL: 'https://floors-environmental-budget-nurse.trycloudflare.com',
     SOCKET_OPTIONS: {
         transports: ['websocket'],
         reconnection: true,
