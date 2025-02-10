@@ -1,5 +1,5 @@
 const config = {
-    API_URL: 'https://drop-academics-speech-substance.trycloudflare.com',
+    API_URL: 'https://llp-describing-international-bradford.trycloudflare.com',
     SOCKET_OPTIONS: {
 
         transports: ['websocket'],
